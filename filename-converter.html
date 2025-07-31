@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filename Converter</title>
+    <style>
+        /* =========================
+           FILENAME CONVERTER STYLES
+           Based on App Template
+           ========================= */
+        
+        body {
+            background-color: #4d6a5f;
+            font-family: "Georgia", sans-serif;
+            color: #F9EFD5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #4d6a5f;
+            border-radius: 10px;
+        }
+        
+        /* Typography */
+        h1 {
+            color: #F9EFD5;
+            font-family: "Georgia", sans-serif;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        h2, h3 {
+            color: #F9EFD5;
+            font-family: "Georgia", sans-serif;
+        }
+        
+        .label {
+            font-size: 16px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            color: #F9EFD5;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .back-btn {
+            background-color: #F9EFD5;
+            color: #4d6a5f;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border: none;
+            cursor: pointer;
+            margin-right: 3px;
+            margin-bottom: 3px;
+            border-radius: 5px;
+            font-family: "Georgia", sans-serif;
+            transition: background-color 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            background-color: #e3d4b5;
+        }
+        
+        /* Form Elements */
+        .text-area {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            border: 2px solid #F9EFD5;
+            border-radius: 5px;
+            background-color: #F9EFD5;
+            color: #4d6a5f;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .text-area::placeholder {
+            color: #8a9a8f;
+            opacity: 0.8;
+        }
+        
+        .text-area:focus {
+            outline: none;
+            border-color: #e3d4b5;
+            box-shadow: 0 0 5px rgba(249, 239, 213, 0.5);
+        }
+        
+        /* Results Container */
+        #resultsContainer {
+            min-height: 150px;
+            border: 2px solid #F9EFD5;
+            border-radius: 5px;
+            padding: 8px;
+            background-color: rgba(249, 239, 213, 0.1);
+            margin-bottom: 10px;
+        }
+        
+        .result-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: rgba(249, 239, 213, 0.1);
+            border-radius: 5px;
+            border: 1px solid #F9EFD5;
+        }
+        
+        .result-path {
+            font-size: 12px;
+            color: #e3d4b5;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 3px;
+            word-break: break-all;
+        }
+        
+        .result-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .result-text {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #F9EFD5;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            background-color: #F9EFD5;
+            color: #4d6a5f;
+        }
+        
+        .result-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .result-btn {
+            padding: 6px 10px;
+            font-size: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: "Georgia", sans-serif;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        
+        .result-btn.copy {
+            background-color: #F9EFD5;
+            color: #4d6a5f;
+        }
+        
+        .result-btn.copy:hover {
+            background-color: #e3d4b5;
+        }
+        
+        .result-btn.delete {
+            background-color: #6c7f76;
+            color: #F9EFD5;
+        }
+        
+        .result-btn.delete:hover {
+            background-color: #5a6d64;
+        }
+        
+        .placeholder {
+            color: #e3d4b5;
+            font-style: italic;
+            text-align: center;
+            padding: 40px;
+            border: 2px dashed #F9EFD5;
+            border-radius: 5px;
+            background-color: rgba(249, 239, 213, 0.05);
+        }
+        
+        /* Buttons */
+        .button {
+            background-color: #F9EFD5;
+            color: #4d6a5f;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border: none;
+            cursor: pointer;
+            margin-right: 3px;
+            margin-bottom: 3px;
+            border-radius: 5px;
+            font-family: "Georgia", sans-serif;
+            transition: background-color 0.2s ease;
+        }
+        
+        .button:hover {
+            background-color: #e3d4b5;
+        }
+        
+        .button:active {
+            background-color: #d4c19a;
+        }
+        
+        .button-secondary {
+            background-color: #6c7f76;
+            color: #F9EFD5;
+        }
+        
+        .button-secondary:hover {
+            background-color: #5a6d64;
+        }
+        
+        .buttons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .button-group .button {
+            margin-right: 0;
+        }
+        
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 6px;
+            background-color: rgba(249, 239, 213, 0.1);
+            border-radius: 5px;
+            border: 1px solid #F9EFD5;
+        }
+        
+        .toggle-label {
+            font-size: 14px;
+            color: #F9EFD5;
+            font-weight: normal;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #6c7f76;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #F9EFD5;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #F9EFD5;
+        }
+        
+        input:checked + .slider:before {
+            background-color: #4d6a5f;
+            transform: translateX(26px);
+        }
+        
+        /* Status Bar */
+        .status-bar {
+            background-color: #F9EFD5;
+            color: #4d6a5f;
+            padding: 5px;
+            margin-top: 10px;
+            text-align: center;
+            border-radius: 5px;
+            font-family: "Georgia", sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .status-bar.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-bar.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-bar.warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        /* Feedback */
+        .feedback {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .feedback.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        /* Examples Section */
+        .examples {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: rgba(249, 239, 213, 0.1);
+            border-radius: 5px;
+            border: 1px solid #F9EFD5;
+        }
+        
+        .examples h3 {
+            margin-top: 0;
+            color: #F9EFD5;
+        }
+        
+        .example-item {
+            margin: 5px 0;
+            padding: 5px;
+            background-color: rgba(249, 239, 213, 0.05);
+            border-radius: 5px;
+            border-left: 3px solid #F9EFD5;
+        }
+        
+        .example-before {
+            color: #e3d4b5;
+            font-style: italic;
+        }
+        
+        .example-after {
+            color: #F9EFD5;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        
+        /* Layout Utilities */
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .container {
+                margin: 5px;
+                padding: 8px;
+                max-width: none;
+            }
+            
+            .button {
+                padding: 5px 6px;
+                font-size: 13px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .button-group .button {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="skf-apps.html" class="back-btn">← Back to Apps</a>
+            <h1>📁 Filename Converter</h1>
+            <div style="width: 120px;"></div> <!-- Spacer for center alignment -->
+        </div>
+        
+        <p style="text-align: center; color: #e3d4b5; margin-bottom: 30px;">
+            Convert any text to filesystem-friendly filenames
+        </p>
+        
+        <div class="section">
+            <label class="label" for="inputText">Enter text to convert or paste file paths:</label>
+            <textarea id="inputText" class="text-area" placeholder="Type or paste your text here, or paste file paths (one per line)..."></textarea>
+        </div>
+        
+        <div class="buttons">
+            <div class="toggle-container">
+                <span class="toggle-label">Include extension:</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="includeExtension" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="button-group">
+                <button class="button" onclick="convertText()">🔄 Convert</button>
+                <button class="button" onclick="copyAllResults()">📋 Copy All</button>
+                <button class="button button-secondary" onclick="clearAll()">🗑️ Clear All</button>
+            </div>
+        </div>
+        
+        <div id="feedback"></div>
+        
+        <div class="section">
+            <label class="label" for="resultsContainer">Converted results:</label>
+            <div id="resultsContainer">
+                <div class="placeholder">Converted text will appear here...</div>
+            </div>
+        </div>
+        
+        <div class="status-bar" id="statusBar">Ready - Paste text or file paths</div>
+        
+        <div class="examples">
+            <h3>💡 Examples:</h3>
+            <div class="example-item">
+                <div class="example-before">Text: "My Document & Notes (Version 2)"</div>
+                <div class="example-after">Result: my_document_and_notes_version_2</div>
+            </div>
+            <div class="example-item">
+                <div class="example-before">Text: "John's Document & Can't Stop"</div>
+                <div class="example-after">Result: john's_document_and_can't_stop</div>
+            </div>
+            <div class="example-item">
+                <div class="example-before">Text: "Sales Report 50% Growth #Q4 @2024"</div>
+                <div class="example-after">Result: sales_report_50percent_growth_hashq4_at2024</div>
+            </div>
+            <div class="example-item">
+                <div class="example-before">Path (with extension): "C:\Files\Project: Sales & Marketing.docx"</div>
+                <div class="example-after">Result: project_sales_and_marketing.docx</div>
+            </div>
+            <div class="example-item">
+                <div class="example-before">Path (without extension): "C:\Files\Project: Sales & Marketing.docx"</div>
+                <div class="example-after">Result: project_sales_and_marketing</div>
+            </div>
+            <div class="example-item">
+                <div class="example-before">Multiple paths (toggle controls all):</div>
+                <div class="example-after">
+                    /home/user/Document & Notes.pdf<br>
+                    D:\Photos\Summer 2024 (Vacation).jpg<br>
+                    → document_and_notes.pdf (or document_and_notes)<br>
+                    → summer_2024_vacation.jpg (or summer_2024_vacation)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function trimFilename(text) {
+            if (!text) return '';
+            
+            // Check if input contains paths (multiple lines or path separators)
+            if (text.includes('\n') || text.includes('\\') || text.includes('/')) {
+                return processPaths(text);
+            }
+            
+            // Original filename cleaning functionality for single text
+            let result = text;
+            
+            // Convert to lowercase
+            result = result.toLowerCase();
+            
+            // Replace percent sign with "percent"
+            result = result.replace(/%/g, 'percent');
+            
+            // Replace ampersand with "and"
+            result = result.replace(/\s*&\s*/g, '_and_');
+            result = result.replace(/&/g, 'and');
+            
+            // Replace other URL-unfriendly symbols with words
+            result = result.replace(/#/g, 'hash');
+            result = result.replace(/\$/g, 'dollar');
+            result = result.replace(/@/g, 'at');
+            result = result.replace(/\+/g, 'plus');
+            result = result.replace(/=/g, 'equals');
+            
+            // Replace spaces with underscores
+            result = result.replace(/\s+/g, '_');
+            
+            // Remove or replace problematic characters
+            // Convert straight apostrophes to curly apostrophes (URL-friendly)
+            result = result.replace(/'/g, '\u2019');
+            
+            // Remove other quotes
+            result = result.replace(/["`]/g, '');
+            
+            // Replace slashes and other problematic characters with underscores
+            result = result.replace(/[\/\\:;<>|?*]/g, '_');
+            
+            // Remove parentheses, brackets, and other punctuation
+            result = result.replace(/[(){}\[\]]/g, '_');
+            
+            // Replace other punctuation with underscores or remove
+            result = result.replace(/[.,!^~]/g, '_');
+            
+            // Clean up multiple consecutive underscores
+            result = result.replace(/_+/g, '_');
+            
+            // Remove leading and trailing underscores
+            result = result.replace(/^_+|_+$/g, '');
+            
+            return result;
+        }
+        
+        function processPaths(text) {
+            const lines = text.split(/\r?\n/);
+            const pathResults = [];
+            
+            for (let line of lines) {
+                line = line.trim();
+                if (line === '') continue;
+                
+                const filename = extractFilename(line);
+                if (filename) {
+                    pathResults.push({
+                        originalPath: line,
+                        filename: filename
+                    });
+                }
+            }
+            
+            // Sort by filename alphabetically
+            pathResults.sort((a, b) => a.filename.localeCompare(b.filename));
+            
+            // Also sort the input text area
+            const sortedInputLines = pathResults.map(item => item.originalPath);
+            document.getElementById('inputText').value = sortedInputLines.join('\n');
+            
+            return pathResults;
+        }
+        
+        function extractFilename(path) {
+            if (!path) return '';
+            
+            // Remove quotes
+            path = path.replace(/["']/g, '');
+            
+            // Extract filename from path
+            let filename = path;
+            const lastSlash = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+            if (lastSlash >= 0) {
+                filename = path.substring(lastSlash + 1);
+            }
+            
+            // Check if we should include extension
+            const includeExtension = document.getElementById('includeExtension').checked;
+            
+            if (!includeExtension) {
+                // Remove file extension
+                const lastDot = filename.lastIndexOf('.');
+                if (lastDot > 0) {  // Don't remove if dot is at beginning (hidden files)
+                    filename = filename.substring(0, lastDot);
+                }
+            }
+            
+            // Apply filename cleaning
+            return cleanFilename(filename);
+        }
+        
+        function cleanFilename(text) {
+            if (!text) return '';
+            
+            let result = text;
+            
+            // Convert to lowercase
+            result = result.toLowerCase();
+            
+            // Replace percent sign with "percent"
+            result = result.replace(/%/g, 'percent');
+            
+            // Replace ampersand with "and"
+            result = result.replace(/&/g, 'and');
+            
+            // Replace other URL-unfriendly symbols with words
+            result = result.replace(/#/g, 'hash');
+            result = result.replace(/\$/g, 'dollar');
+            result = result.replace(/@/g, 'at');
+            result = result.replace(/\+/g, 'plus');
+            result = result.replace(/=/g, 'equals');
+            
+            // Replace spaces with underscores
+            result = result.replace(/\s+/g, '_');
+            
+            // Convert straight apostrophes to curly apostrophes (URL-friendly)
+            result = result.replace(/'/g, '\u2019');
+            
+            // Remove other quotes
+            result = result.replace(/["`]/g, '');
+            
+            // Replace problematic characters with underscores
+            result = result.replace(/[:;<>|?*]/g, '_');
+            
+            // Remove parentheses and brackets
+            result = result.replace(/[(){}\[\]]/g, '_');
+            
+            // Replace other punctuation with underscores
+            result = result.replace(/[.,!^~]/g, '_');
+            
+            // Clean up multiple consecutive underscores
+            result = result.replace(/_+/g, '_');
+            
+            // Remove leading and trailing underscores
+            result = result.replace(/^_+|_+$/g, '');
+            
+            return result;
+        }
+        
+        function convertText() {
+            const inputText = document.getElementById('inputText').value;
+            const converted = trimFilename(inputText);
+            displayResults(converted);
+            updateStatus('Conversion complete!');
+        }
+        
+        function displayResults(results) {
+            const container = document.getElementById('resultsContainer');
+            
+            // Handle empty results
+            if (!results || (typeof results === 'string' && results.trim() === '')) {
+                container.innerHTML = '<div class="placeholder">Converted text will appear here...</div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            // Handle path results (array of objects) vs simple text results (string)
+            if (Array.isArray(results)) {
+                // Path results with original paths
+                results.forEach((item, index) => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    resultItem.innerHTML = `
+                        <div class="result-path">${item.originalPath}</div>
+                        <div class="result-content">
+                            <input type="text" class="result-text" value="${item.filename}" readonly>
+                            <div class="result-buttons">
+                                <button class="result-btn copy" onclick="copyLineByElement(this)">Copy</button>
+                                <button class="result-btn delete" onclick="deleteLineByElement(this)">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(resultItem);
+                });
+            } else {
+                // Simple text results - split by lines and sort alphabetically
+                const lines = results.split('\n').filter(line => line.trim() !== '');
+                lines.sort((a, b) => a.localeCompare(b));
+                
+                lines.forEach((line, index) => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    resultItem.innerHTML = `
+                        <div class="result-content">
+                            <input type="text" class="result-text" value="${line.trim()}" readonly>
+                            <div class="result-buttons">
+                                <button class="result-btn copy" onclick="copyLineByElement(this)">Copy</button>
+                                <button class="result-btn delete" onclick="deleteLineByElement(this)">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(resultItem);
+                });
+            }
+        }
+        
+        function copyLineByElement(button) {
+            // Find the text input in the same result item
+            const resultItem = button.closest('.result-item');
+            const textInput = resultItem.querySelector('.result-text');
+            
+            if (textInput) {
+                navigator.clipboard.writeText(textInput.value).then(() => {
+                    updateStatus('Copied to clipboard!');
+                }).catch(() => {
+                    // Fallback selection method
+                    textInput.select();
+                    textInput.setSelectionRange(0, 99999);
+                    document.execCommand('copy');
+                    updateStatus('Copied to clipboard!');
+                });
+            }
+        }
+        
+        function deleteLineByElement(button) {
+            // Find the result item to delete
+            const resultItem = button.closest('.result-item');
+            const container = document.getElementById('resultsContainer');
+            
+            if (resultItem) {
+                // Find the current line number for display
+                const allItems = Array.from(container.querySelectorAll('.result-item'));
+                const lineNumber = allItems.indexOf(resultItem) + 1;
+                
+                // Get the original path to remove from input (if it exists)
+                const pathElement = resultItem.querySelector('.result-path');
+                if (pathElement) {
+                    const originalPath = pathElement.textContent;
+                    removePathFromInput(originalPath);
+                }
+                
+                // Remove the item
+                resultItem.remove();
+                updateStatus(`Line ${lineNumber} deleted`);
+                
+                // If no items left, show placeholder
+                if (container.children.length === 0) {
+                    container.innerHTML = '<div class="placeholder">Converted text will appear here...</div>';
+                    // Clear input if no results left
+                    document.getElementById('inputText').value = '';
+                }
+            }
+        }
+        
+        function removePathFromInput(pathToRemove) {
+            const inputTextarea = document.getElementById('inputText');
+            const currentInput = inputTextarea.value;
+            const lines = currentInput.split(/\r?\n/);
+            
+            // Filter out the matching path
+            const filteredLines = lines.filter(line => line.trim() !== pathToRemove);
+            
+            // Update the input textarea
+            inputTextarea.value = filteredLines.join('\n');
+        }
+        
+        function copyAllResults() {
+            const resultItems = document.querySelectorAll('.result-text');
+            if (resultItems.length === 0) {
+                updateStatus('Nothing to copy! Please convert some text first.');
+                return;
+            }
+            
+            const allText = Array.from(resultItems).map(item => item.value).join('\n');
+            navigator.clipboard.writeText(allText).then(() => {
+                updateStatus('All results copied to clipboard!');
+            }).catch(() => {
+                updateStatus('Failed to copy results');
+            });
+        }
+        
+        function updateStatus(message) {
+            const statusBar = document.getElementById('statusBar');
+            statusBar.textContent = message;
+            
+            // Auto-reset to default after 3 seconds unless it's the default message
+            if (message !== 'Ready - Paste text or file paths') {
+                setTimeout(() => {
+                    statusBar.textContent = 'Ready - Paste text or file paths';
+                }, 3000);
+            }
+        }
+        
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('resultsContainer').innerHTML = '<div class="placeholder">Converted text will appear here...</div>';
+            document.getElementById('feedback').innerHTML = '';
+            updateStatus('Cleared');
+        }
+        
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('feedback');
+            feedback.innerHTML = `<div class="feedback ${type}">${message}</div>`;
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                feedback.innerHTML = '';
+            }, 3000);
+        }
+        
+        // Auto-convert on input (with debounce)
+        let timeoutId;
+        document.getElementById('inputText').addEventListener('input', function() {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                if (this.value.trim()) {
+                    convertText();
+                } else {
+                    // Clear results when input is empty
+                    document.getElementById('resultsContainer').innerHTML = '<div class="placeholder">Converted text will appear here...</div>';
+                    updateStatus('Ready - Paste text or file paths');
+                }
+            }, 500);
+        });
+        
+        // Auto-convert when extension toggle changes
+        document.getElementById('includeExtension').addEventListener('change', function() {
+            const inputText = document.getElementById('inputText').value;
+            if (inputText.trim()) {
+                convertText();
+            }
+        });
+        
+        // Allow Enter key to trigger conversion
+        document.getElementById('inputText').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                convertText();
+            }
+        });
+        
+        // Initialize
+        window.onload = function() {
+            updateStatus('Filename Converter ready - Enter text to begin converting');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script Captions Processor</title>
+    <style>
+        /* =========================
+           SCRIPT CAPTIONS PROCESSOR STYLES
+           Based on App Template
+           ========================= */
+        
+        body {
+            background-color: #4d6a5f;
+            font-family: "Georgia", sans-serif;
+            color: #F9EFD5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #4d6a5f;
+            border-radius: 10px;
+        }
+        
+        /* Typography */
+        h1 {
+            color: #F9EFD5;
+            font-family: "Georgia", sans-serif;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        h2, h3 {
+            color: #F9EFD5;
+            font-family: "Georgia", sans-serif;
+        }
+        
+        .label {
+            font-size: 16px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            color: #F9EFD5;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .about-btn {
+            background-color: #F9EFD5;
+            color: #4d6a5f;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border: none;
+            cursor: pointer;
+            margin-right: 3px;
+            margin-bottom: 3px;
+            border-radius: 5px;
+            font-family: "Georgia", sans-serif;
+            transition: background-color 0.2s ease;
+        }
+        
+        .about-btn:hover {
+            background-color: #e3d4b5;
+        }
+        
+        /* Form Elements */
+        .text-area {
+            width: 100%;
+            min-height: 200px;
+            padding: 5px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            border: 2px solid #F9EFD5;
+            border-radius: 5px;
+            background-color: #F9EFD5;
+            color: #4d6a5f;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+        }
+        
+        .text-area::placeholder {
+            color: #8a9a8f;
+            opacity: 0.8;
+        }
+        
+        .text-area:focus {
+            outline: none;
+            border-color: #e3d4b5;
+            box-shadow: 0 0 5px rgba(249, 239, 213, 0.5);
+        }
+        
+        /* Buttons */
+        .button {
+            background-color: #F9EFD5;
+            color: #4d6a5f;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border: none;
+            cursor: pointer;
+            margin-right: 3px;
+            margin-bottom: 3px;
+            border-radius: 5px;
+            font-family: "Georgia", sans-serif;
+            transition: background-color 0.2s ease;
+        }
+        
+        .button:hover {
+            background-color: #e3d4b5;
+        }
+        
+        .button:active {
+            background-color: #d4c19a;
+        }
+        
+        .button:disabled {
+            background-color: #b8b8b8;
+            color: #6c6c6c;
+            cursor: not-allowed;
+        }
+        
+        .button-secondary {
+            background-color: #6c7f76;
+            color: #F9EFD5;
+        }
+        
+        .button-secondary:hover {
+            background-color: #5a6d64;
+        }
+        
+        .buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+        }
+        
+        .button-group .button {
+            margin-right: 0;
+        }
+        
+        /* Modal/Dialog Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: #4d6a5f;
+            margin: 5% auto;
+            padding: 15px;
+            border: 2px solid #F9EFD5;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            color: #F9EFD5;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-close {
+            color: #F9EFD5;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 15px;
+            top: 10px;
+        }
+        
+        .modal-close:hover {
+            color: #e3d4b5;
+        }
+        
+        /* Cards/Info Boxes */
+        .card {
+            background-color: rgba(249, 239, 213, 0.1);
+            border: 1px solid #F9EFD5;
+            border-radius: 5px;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .card-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #F9EFD5;
+        }
+        
+        .info-box {
+            background-color: rgba(249, 239, 213, 0.1);
+            border: 1px solid #F9EFD5;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 13px;
+        }
+        
+        .info-box strong {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #F9EFD5;
+        }
+        
+        .info-box p {
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        
+        .info-box ul {
+            margin: 5px 0 0 0;
+            padding-left: 10px;
+        }
+        
+        .info-box li {
+            margin-bottom: 5px;
+        }
+        
+        /* Status Bar */
+        .status-bar {
+            background-color: #F9EFD5;
+            color: #4d6a5f;
+            padding: 5px;
+            margin-top: 10px;
+            text-align: center;
+            border-radius: 5px;
+            font-family: "Georgia", sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .status-bar.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-bar.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-bar.warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        /* Layout Utilities */
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .container {
+                margin: 5px;
+                padding: 8px;
+                max-width: none;
+            }
+            
+            .button {
+                padding: 5px 6px;
+                font-size: 13px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .button-group .button {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="about-btn" onclick="showAbout()">About</button>
+            <h1>Script Captions Processor</h1>
+            <a href="skf-apps.html" class="about-btn">← Back to Apps</a>
+        </div>
+        
+        <!-- About Modal -->
+        <div id="aboutModal" class="modal">
+            <div class="modal-content">
+                <span class="modal-close" onclick="hideAbout()">&times;</span>
+                <div class="info-box">
+                    <strong>📝 Script Captions Processor</strong>
+                    <p>This tool processes text by cleaning up formatting and adding strategic line breaks to improve readability. 
+                    It's designed to format script-like text into condition captions with proper paragraph breaks.</p>
+                    
+                    <p><strong>How to use:</strong></p>
+                    <ul>
+                        <li>Paste your text into the input field</li>
+                        <li>Click "Process Text" to format it</li>
+                        <li>Copy the processed text from the output field</li>
+                        <li>Use Ctrl+Enter in the input field as a shortcut to process</li>
+                    </ul>
+                    
+                    <p><strong>What it does:</strong></p>
+                    <ul>
+                        <li>Removes content in square brackets and specific parenthetical references</li>
+                        <li>Standardizes all whitespace and removes extra spaces</li>
+                        <li>Normalizes quotation marks to straight ASCII quotes</li>
+                        <li>Adds paragraph breaks after punctuation marks for better flow</li>
+                        <li>Inserts breaks before conjunctions and prepositions</li>
+                        <li>Protects certain phrases from being broken up incorrectly</li>
+                        <li>Standardizes hyphen and dash usage</li>
+                        <li>Handles line breaks after commas and periods</li>
+                    </ul>
+                    
+                    <p><strong>Detailed Processing Steps:</strong></p>
+                    <ul>
+                        <li>Remove anything in square brackets</li>
+                        <li>Remove (Ovadyah) and (Yochanan)</li>
+                        <li>Standardize all whitespace to regular spaces</li>
+                        <li>Convert Unicode ellipsis (…) to ASCII ellipsis (...)</li>
+                        <li>Remove extra spaces and excessive line breaks</li>
+                        <li>Normalize ALL quotation marks to straight ASCII quotes (" and ') - handles all Unicode variants</li>
+                        <li>Remove spaces between punctuation and quotes when quote is at end or followed by whitespace</li>
+                        <li>Keep quotes with ellipsis together when followed by content</li>
+                        <li>Fix common typos by adding spaces between letters and numbers</li>
+                        <li>Protect Bible verse patterns (like 3:16) from being broken</li>
+                        <li>Add line breaks after verse references when followed by quotes or alphanumeric content</li>
+                        <li>Handle consecutive punctuation marks as groups (like ... or ?!) - parse only after the final mark</li>
+                        <li>Handle punctuation + quote combinations - parse after the quote mark(s)</li>
+                        <li>Add paragraph breaks after punctuation marks not followed by quotes</li>
+                        <li>Protect periods between letters (like .org, .com) from being parsed</li>
+                        <li>Add breaks BEFORE "and" only when preceded by punctuation + space</li>
+                        <li>Add breaks BEFORE other conjunctions (but, or, etc.) and prepositions</li>
+                        <li>Protect "as", "to", and "the" from having breaks before or after them</li>
+                        <li>Keep closing punctuation (parentheses, brackets, etc.) with their content</li>
+                        <li>Protect URL extensions and file extensions from being broken</li>
+                        <li>Restore protected phrases that shouldn't be split</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <label class="label" for="inputText">Input Text:</label>
+            <textarea id="inputText" class="text-area" placeholder="Paste your text here to process..."></textarea>
+        </div>
+        
+        <div class="buttons">
+            <div class="button-group">
+                <button class="button" onclick="processText()">Process Text</button>
+                <button class="button button-secondary" onclick="clearAll()">Clear All</button>
+            </div>
+        </div>
+        
+        <div id="statusBar" class="status-bar"></div>
+        
+        <div class="section">
+            <label class="label" for="outputText">Processed Text:</label>
+            <textarea id="outputText" class="text-area" readonly></textarea>
+            <div style="text-align: center; margin-top: 10px;">
+                <button class="button" onclick="copyToClipboard()">Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function processText() {
+            const inputText = document.getElementById('inputText').value;
+            const statusBar = document.getElementById('statusBar');
+            
+            if (!inputText.trim()) {
+                updateStatusBar('Please enter some text to process.', 'warning');
+                return;
+            }
+            
+            try {
+                updateStatusBar('Processing...', 'warning');
+                
+                const processedText = performTextProcessing(inputText);
+                document.getElementById('outputText').value = processedText;
+                
+                updateStatusBar('Processing complete!', 'success');
+            } catch (error) {
+                updateStatusBar('Error processing text: ' + error.message, 'error');
+            }
+        }
+        
+        // Status Bar Updates
+        function updateStatusBar(message, type = '') {
+            const statusBar = document.getElementById('statusBar');
+            statusBar.textContent = message;
+            statusBar.className = 'status-bar';
+            if (type) {
+                statusBar.classList.add(type);
+            }
+        }
+        
+        function showAbout() {
+            document.getElementById('aboutModal').style.display = 'block';
+        }
+        
+        function hideAbout() {
+            document.getElementById('aboutModal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('aboutModal');
+            if (event.target === modal) {
+                hideAbout();
+            }
+        }
+        
+        // Close modal when pressing Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('aboutModal');
+                if (modal.style.display === 'block') {
+                    hideAbout();
+                }
+            }
+        });
+        
+        function performTextProcessing(s) {
+            const crChar = '\n';
+            // Removed "as" and "to" from the list, and separated conjunctions
+            const preps = 'but|or|nor|so|yet|from|into|over|after|since|until|although|because|unless';
+            
+            // 1. Remove anything in square brackets
+            s = s.replace(/\[[^\]]*\]/g, '');
+            
+            // 2. Remove (Ovadyah) and (Yochanan)
+            s = s.replace(/\((Ovadyah|Yochanan)\)/g, '');
+            
+            // 3. Replace all types of whitespace with regular spaces
+            s = s.replace(/[\t\v\f\u00A0\u2000-\u200B\u2028\u2029\u3000]/g, ' ');
+            // Remove Unicode figure dash (U+2012)
+            s = s.replace(/\u2012/g, ' ');
+            
+            // 3a. Convert Unicode ellipsis to ASCII ellipsis
+            s = s.replace(/\u2026/g, '...');
+            
+            // 4. Remove extra spaces between words, leading, and trailing spaces
+            s = s.replace(/ {2,}/g, ' ');
+            s = s.trim();
+            
+            // 5. Normalize ALL quotation marks to straight ASCII quotes EARLY
+            // This must be done before any other processing that checks for quotes
+            // Double quotes - convert all variations to straight ASCII double quote (")
+            s = s.replace(/[""„«»‹›「」『』\u201C\u201D\u201E\u201F\u2039\u203A\u00AB\u00BB\u301D\u301E\u301F\uFF02]/g, '"');
+            // Single quotes and apostrophes - convert all to straight ASCII single quote (')
+            s = s.replace(/[''‚‛\u2018\u2019\u201A\u201B\u2032\u2035\uFF07]/g, "'");
+            
+            // 5a. Remove spaces between punctuation and quotes when there's nothing after the quote
+            // Pattern: punctuation + space(s) + quote + (end of string OR whitespace)
+            s = s.replace(/([.!?:;,–])\s+(["'])(?=\s*$|\s)/g, '$1$2');
+            
+            // 5a2. Keep quote sequences together - remove spaces between quotes
+            // Handle patterns like .' " or ." ' that should be together
+            s = s.replace(/([.!?:;,–]["'])\s+(["'])/g, '$1$2');
+            
+            // 5b. Handle quotes followed by ellipsis - keep them together with following content
+            // Pattern: quote + ellipsis + space + word - don't break after ellipsis
+            s = s.replace(/(["'])(\.\.\.)(\s+)(\w)/g, '$1$2 $4');
+            
+            // 6. Fix common typos by adding spaces between letters and numbers
+            // This helps with cases like "Beyth7:28" which should be "Beyth 7:28"
+            s = s.replace(/([a-zA-Z])(\d)/g, '$1 $2');
+            
+            // 7. First, temporarily replace #:# patterns (Bible verses) to protect them
+            // Pattern matches 1-3 digits : 1-3 digits (covers #:# to ###:###)
+            const versePattern = /\b\d{1,3}:\d{1,3}\b/g;
+            const verseMatches = s.match(versePattern) || [];
+            const verseReplacements = {};
+            verseMatches.forEach((match, index) => {
+                const placeholder = `__VERSE_${index}__`;
+                verseReplacements[placeholder] = match;
+                s = s.replace(match, placeholder);
+            });
+            
+            // 8. Handle consecutive punctuation marks followed by quote marks
+            // Group consecutive punctuation and only parse after the last one + quote(s)
+            s = s.replace(/([!?:;,–.]+)(["'])/g, '$1$2' + crChar);
+            
+            // 9. Add paragraph break after consecutive punctuation NOT followed by quotes
+            // Group consecutive punctuation marks and only add break after the final one
+            // BUT avoid breaking after ellipsis if there's a word following (with or without spaces)
+            // Also avoid breaking if already followed by quotes
+            s = s.replace(/([!?:;,–.]+)(?!["'])(?!\s*\w)/g, '$1' + crChar);
+            
+            // 10. Restore verse references
+            Object.keys(verseReplacements).forEach(placeholder => {
+                s = s.replace(placeholder, verseReplacements[placeholder]);
+            });
+            
+            // 11. Add line break before quote marks ONLY after verse references
+            // Only break when preceded by digits (verse references) + space + quote
+            // This avoids breaking nested quotes and quote sequences
+            s = s.replace(/(\d)\s+(["'])/g, '$1 ' + crChar + '$2');
+            
+            // 11a. Add line breaks after commas followed by spaces
+            s = s.replace(/,\s+/g, ',' + crChar);
+            
+            // 11b. Add line breaks after periods followed by spaces (but not ellipsis)
+            // Use negative lookahead to avoid breaking if the period is followed by more periods (ellipsis)
+            // Also use negative lookbehind simulation by checking what comes before
+            s = s.replace(/([^.])(\.)(\s+)(?!\.)/g, '$1$2' + crChar);
+            
+            // 11c. Standardize hyphen/dash usage
+            // First, convert all em-dashes and en-dashes to regular hyphens
+            s = s.replace(/[—–]/g, '-');
+            
+            // Ensure verse references (number-number) use hyphens with no spaces
+            s = s.replace(/(\d)\s*-\s*(\d)/g, '$1-$2');
+            
+            // Convert text dashes to en-dashes with spaces (when not between numbers)
+            // Pattern: non-digit + space + hyphen + space + non-digit
+            s = s.replace(/([^\d])\s+-\s+([^\d])/g, '$1 – $2');
+            // Pattern: non-digit + space + hyphen + non-digit/space
+            s = s.replace(/([^\d])\s+-([^\d\s])/g, '$1 – $2');
+            // Pattern: non-digit/space + hyphen + space + non-digit
+            s = s.replace(/([^\d\s])-\s+([^\d])/g, '$1 – $2');
+            
+            // Handle number-to-text and text-to-number dashes
+            s = s.replace(/([^\d\s])-\s+(\d)/g, '$1 – $2');
+            s = s.replace(/([^\d\s])\s+-(\d)/g, '$1 – $2');
+            s = s.replace(/([^\d\s])\s+-\s+(\d)/g, '$1 – $2');
+            s = s.replace(/(\d\s?)-\s+([^\d])/g, '$1 – $2');
+            s = s.replace(/(\d\s?)\s+-([^\d])/g, '$1 – $2');
+            s = s.replace(/(\d\s?)\s+-\s+([^\d])/g, '$1 – $2');
+            
+            // 12. Add paragraph break BEFORE conjunctions (not after "and" or other conjunctions)
+            // Special handling for "and" - only parse if preceded by punctuation + space
+            s = s.replace(/([.!?:;,–]\s+)\band\b/g, '$1' + crChar + 'and');
+            
+            // Handle other conjunctions normally (but, or, nor, so, yet, although, because, unless)
+            const otherConjunctions = 'but|or|nor|so|yet|although|because|unless';
+            s = s.replace(new RegExp('\\s+\\b(' + otherConjunctions + ')\\b', 'g'), crChar + '$1');
+            
+            // 13. Add paragraph break before prepositions (excluding "as" and "to")
+            s = s.replace(new RegExp('\\s+\\b(' + preps + ')\\b', 'g'), crChar + '$1');
+            
+            // 14. Remove extra spaces and leading/trailing whitespace from each line
+            const lines = s.split('\n');
+            for (let j = 0; j < lines.length; j++) {
+                lines[j] = removeLeadingUnicodeSpaces(lines[j]).trim();
+            }
+            s = lines.join('\n');
+            
+            // 15. Remove excessive paragraph breaks (2 or more in a row)
+            s = s.replace(/(\r|\n){2,}/g, crChar);
+            
+            // 16. Restore protected phrases that may have gotten split
+            s = restoreProtectedPhrases(s);
+            
+            // Remove initial paragraph break or space if present
+            if (s.length > 0) {
+                if (s.charAt(0) === '\n' || s.charAt(0) === '\r' || s.charAt(0) === ' ') {
+                    s = s.substring(1);
+                }
+            }
+            
+            return s;
+        }
+        
+        function removeLeadingUnicodeSpaces(s) {
+            let i = 0;
+            while (i < s.length) {
+                const charCode = s.charCodeAt(i);
+                if (charCode === 32 || charCode === 160 || 
+                    (charCode >= 8192 && charCode <= 8203) || 
+                    charCode === 8239 || charCode === 8287 || charCode === 12288) {
+                    i++;
+                } else {
+                    break;
+                }
+            }
+            return s.substring(i);
+        }
+        
+        function restoreProtectedPhrases(s) {
+            const phrases = [
+                'any of', 'as with', '.org', 'get into', 'run into', 'and so on',
+                'that of', 'same as', 'equal to', 'you with', 'some of', 'leads to',
+                'one and only', 'like to', 'do so', 'refers to', 'just for', 'or by', 'those of',
+                // Added more "as" and "to" phrases to protect
+                'as to', 'as for', 'as in', 'as of', 'as per', 'such as', 'known as',
+                'to be', 'to do', 'to go', 'to see', 'to get', 'to have', 'to make',
+                'according to', 'due to', 'up to', 'next to', 'close to', 'similar to',
+                // Protect ellipsis and other consecutive punctuation
+                '...', '..', '!?', '?!', '!!', '??', ',,'
+            ];
+            
+            // Handle exact phrases first
+            for (const phrase of phrases) {
+                s = restoreBrokenPhrase(s, phrase);
+            }
+            
+            // Handle wildcard patterns
+            s = restoreWildcardPhrases(s);
+            
+            // Fix punctuation that ended up at the start of lines
+            // Remove line breaks before punctuation marks
+            s = s.replace(/\n([.!?:;,–]+)/g, '$1');
+            
+            // Fix quotes that ended up separated from punctuation by line breaks
+            // Pattern: punctuation + quote + line break + quote should become punctuation + quote + quote
+            s = s.replace(/([.!?:;,–]+["'])\s*\n\s*(["'])/g, '$1$2');
+            
+            // Fix URL extensions and similar patterns that got broken
+            // Pattern: word + newline + .extension (like "Fellowship.\norg")
+            s = s.replace(/(\w+)\n(\.[a-z]{2,4}\b)/g, '$1$2');
+            
+            // Fix closing punctuation that ended up at the start of lines
+            // Remove line breaks before closing brackets, parentheses, etc.
+            s = s.replace(/\n([\)\]\}]+)/g, '$1');
+            
+            // Additional protection for standalone "as", "to", and "the" words
+            // Restore breaks that might have been incorrectly placed around "as"
+            s = s.replace(new RegExp('\\n(\\s*)as(\\s+)', 'g'), ' as$2');
+            s = s.replace(new RegExp('(\\s+)as(\\s*)\\n', 'g'), '$1as ');
+            
+            // Restore breaks that might have been incorrectly placed around "to"
+            s = s.replace(new RegExp('\\n(\\s*)to(\\s+)', 'g'), ' to$2');
+            s = s.replace(new RegExp('(\\s+)to(\\s*)\\n', 'g'), '$1to ');
+            
+            // Restore breaks that might have been incorrectly placed around "the"
+            s = s.replace(new RegExp('\\n(\\s*)the(\\s+)', 'g'), ' the$2');
+            s = s.replace(new RegExp('(\\s+)the(\\s*)\\n', 'g'), '$1the ');
+            
+            return s;
+        }
+        
+        function restoreBrokenPhrase(s, phrase) {
+            const words = phrase.split(' ');
+            let brokenPhrase = words[0];
+            for (let i = 1; i < words.length; i++) {
+                brokenPhrase += '\n' + words[i];
+            }
+            return s.replace(new RegExp(escapeRegExp(brokenPhrase), 'g'), phrase);
+        }
+        
+        function restoreWildcardPhrases(s) {
+            const crChar = '\n';
+            
+            // [anything before] of YHWH
+            s = s.replace(new RegExp('(\\w+)' + crChar + 'of YHWH', 'g'), '$1 of YHWH');
+            // [anything before] at you
+            s = s.replace(new RegExp('(\\w+)' + crChar + 'at you', 'g'), '$1 at you');
+            // [anything before] of it
+            s = s.replace(new RegExp('(\\w+)' + crChar + 'of it', 'g'), '$1 of it');
+            // [anything before] to it
+            s = s.replace(new RegExp('(\\w+)' + crChar + 'to it', 'g'), '$1 to it');
+            
+            return s;
+        }
+        
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+        
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('outputText').value = '';
+            updateStatusBar('All fields cleared', 'success');
+        }
+        
+        function copyToClipboard() {
+            const outputText = document.getElementById('outputText');
+            
+            if (!outputText.value.trim()) {
+                updateStatusBar('No processed text to copy.', 'warning');
+                return;
+            }
+            
+            outputText.select();
+            outputText.setSelectionRange(0, 99999); // For mobile devices
+            
+            try {
+                document.execCommand('copy');
+                updateStatusBar('Text copied to clipboard!', 'success');
+            } catch (err) {
+                // Fallback for modern browsers
+                navigator.clipboard.writeText(outputText.value).then(() => {
+                    updateStatusBar('Text copied to clipboard!', 'success');
+                }).catch(() => {
+                    updateStatusBar('Failed to copy text. Please select and copy manually.', 'error');
+                });
+            }
+        }
+        
+        // Initialize
+        window.onload = function() {
+            updateStatusBar('Script Captions Processor ready - Enter text to begin processing');
+        }
+    </script>
+</body>
+</html>
